@@ -25,3 +25,6 @@ FORMS    += mainwindow.ui \
     cameraconnectdialog.ui
 
 LIBS    += `pkg-config opencv --libs`
+
+DISTFILES += \
+    README.md
