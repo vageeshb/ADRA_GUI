@@ -9,7 +9,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionAdd_Camera, SIGNAL(triggered()), this, SLOT(addCamera()));
 
     // Get list of connected devices
-    cap = new VideoCapture();
+    listOfDevices.push_back(0);
+    /*cap = new VideoCapture();
     int count = 0;
     for(int i=0; i < 10; i++) {
         if(cap->open(i)) {
@@ -20,16 +21,20 @@ MainWindow::MainWindow(QWidget *parent) :
         else
             break;
     }
-    ui->logBrowser->append("Number of devices found: " + QString::number(count)) ;
+    delete cap;
+    ui->logBrowser->append("Number of devices found: " + QString::number(count)) ;*/
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
-    delete cap;
 }
 
 void MainWindow::addCamera() {
-    CameraConnectDialog *cam = new CameraConnectDialog(this, listOfDevices);
-    cam->show();
+    CameraConnectDialog *camConnect = new CameraConnectDialog(this, listOfDevices);
+    int retCode = camConnect->exec();
+    if(retCode == QDialog::Accepted) {
+        CameraWindow *w = new CameraWindow(this, camConnect->getCameraNumber());
+        w->show();
+    }
 }

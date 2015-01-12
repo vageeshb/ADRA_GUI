@@ -14,10 +14,8 @@ class CameraConnectDialog : public QDialog
 
 public:
     explicit CameraConnectDialog(QWidget *parent, std::vector<int> devices);
+    int getCameraNumber();
     ~CameraConnectDialog();
-
-private slots:
-    void on_buttonBox_accepted();
 
 private:
     Ui::CameraConnectDialog *ui;

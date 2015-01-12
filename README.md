@@ -11,8 +11,8 @@
   * Additional Options
   * Device location
   * Device tracking
-~~* Camera Connect Window~~
-  ~~* Device list~~
+  * ~~Camera Connect Window~~
+    * ~~Device list~~
 * Camera Window
   * Display image from Camera
   * Add Stats from Camera

@@ -16,7 +16,6 @@ CameraConnectDialog::~CameraConnectDialog()
     delete ui;
 }
 
-void CameraConnectDialog::on_buttonBox_accepted()
-{
-    qDebug() << ui->deviceBox->currentText();
+int CameraConnectDialog::getCameraNumber() {
+    return ui->deviceBox->currentText().toInt();
 }

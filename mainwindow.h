@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include "opencv2/opencv.hpp"
 #include "cameraconnectdialog.h"
+#include "camerawindow.h"
 
 using namespace cv;
 
