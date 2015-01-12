@@ -14,18 +14,18 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    imageconversion.cpp \
     cameraconnectdialog.cpp \
     camerawindow.cpp \
     camerathread.cpp \
-    videostats.cpp
+    videostats.cpp \
+    imageprocessing.cpp
 
 HEADERS  += mainwindow.h \
-    imageconversion.h \
     cameraconnectdialog.h \
     camerawindow.h \
     camerathread.h \
-    videostats.h
+    videostats.h \
+    imageprocessing.h
 
 FORMS    += mainwindow.ui \
     cameraconnectdialog.ui \

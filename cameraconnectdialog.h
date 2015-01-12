@@ -13,7 +13,7 @@ class CameraConnectDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit CameraConnectDialog(QWidget *parent, std::vector<int> devices);
+    explicit CameraConnectDialog(QWidget *parent);
     int getCameraNumber();
     ~CameraConnectDialog();
 

@@ -1,16 +1,65 @@
-#include "imageconversion.h"
+#include "imageprocessing.h"
 
-ImageConversion::ImageConversion()
+ImageProcessing::ImageProcessing()
+{
+    hog.setSVMDetector(HOGDescriptor::getDefaultPeopleDetector());
+}
+
+ImageProcessing::~ImageProcessing()
 {
 
 }
 
-ImageConversion::~ImageConversion()
-{
+QImage ImageProcessing::DetectPeopleWithFilter(Mat &inMat) {
+    found.clear();
+    found_filtered.clear();
 
+    hog.detectMultiScale(inMat, found, 0,
+                    Size(8, 8),
+                    Size(32, 32),
+                    1.05, 2);
+    // Filter the found features
+    for (i=0; i<found.size(); i++) {
+        r = found[i];
+        for (j=0; j<found.size(); j++)
+            if (j!=i && (r & found[j])==r)
+                break;
+        if (j==found.size())
+            found_filtered.push_back(r);
+    }
+    for (i=0; i<found_filtered.size(); i++) {
+        r = found_filtered[i];
+        r.x += cvRound(r.width*0.1);
+        r.width = cvRound(r.width*0.8);
+        r.y += cvRound(r.height*0.06);
+        r.height = cvRound(r.height*0.9);
+        rectangle(inMat, r.tl(), r.br(), cv::Scalar(0,255,0), 2);
+    }
+    return MatToQImage(inMat);
 }
 
-QImage ImageConversion::MatToQImage(cv::Mat &inMat) {
+QImage ImageProcessing::DetectPeople(Mat &inMat) {
+    found.clear();
+    found_filtered.clear();
+
+    hog.detectMultiScale(inMat, found, 0,
+                    Size(8, 8),
+                    Size(32, 32),
+                    1.05, 2);
+
+    // Mark the found features with a rectangle
+    for (i=0; i<found.size(); i++) {
+        r = found_filtered[i];
+        r.x += cvRound(r.width*0.1);
+        r.width = cvRound(r.width*0.8);
+        r.y += cvRound(r.height*0.06);
+        r.height = cvRound(r.height*0.9);
+        rectangle(inMat, r.tl(), r.br(), cv::Scalar(0,255,0), 2);
+    }
+    return MatToQImage(inMat);
+}
+
+QImage ImageProcessing::MatToQImage(cv::Mat &inMat) {
     switch(inMat.type()) {
         case CV_8UC4: {
             QImage image( inMat.data, inMat.cols, inMat.rows, inMat.step, QImage::Format_RGB32 );

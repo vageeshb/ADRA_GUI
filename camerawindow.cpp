@@ -11,6 +11,9 @@ CameraWindow::CameraWindow(QWidget *parent, int number) :
     ct = new CameraThread(0, number);
     connect(ct, SIGNAL(processedImage(QImage)), this, SLOT(updateImage(QImage)));
     connect(ct, SIGNAL(processedStats(VideoStats)), this, SLOT(updateStats(VideoStats)));
+    connect(ct, SIGNAL(processedSizes(VideoStats)), this, SLOT(updateWindow(VideoStats)));
+    connect(this, SIGNAL(updateDetect(bool)), ct, SLOT(updateDetect(bool)));
+    connect(this, SIGNAL(updateFiltered(bool)), ct, SLOT(updateFiltered(bool)));
     ct->Play();
 }
 
@@ -29,8 +32,28 @@ void CameraWindow::updateImage(QImage img) {
     }
 }
 
+void CameraWindow::updateWindow(VideoStats stats) {
+    int w = stats.getWidth(), h = stats.getHeight();
+
+    this->setMinimumSize(w, h + 100);
+    this->setMaximumSize(w, h + 100);
+    this->statusBar()->setSizeGripEnabled(false);
+    ui->centralwidget->resize(w, h + 100);
+}
+
 void CameraWindow::updateStats(VideoStats stats) {
-    ui->imageViewer->resize(stats.getWidth(), stats.getHeight());
-    ui->lblWidth->setText(QString::number(stats.getWidth()) + " X " + QString::number(stats.getHeight()));
+    int w = stats.getWidth(), h = stats.getHeight();
+    ui->lblSize->setText(QString::number(w) + " X " + QString::number(h));
     ui->lblFPS->setText(QString::number(stats.getFps()));
+}
+
+
+void CameraWindow::on_chkFiltered_clicked(bool checked)
+{
+    emit updateFiltered(checked);
+}
+
+void CameraWindow::on_chkDetect_clicked(bool checked)
+{
+    emit updateDetect(checked);
 }

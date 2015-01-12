@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>276</width>
+    <width>289</width>
     <height>85</height>
    </rect>
   </property>
@@ -18,7 +18,7 @@
     <rect>
      <x>10</x>
      <y>10</y>
-     <width>256</width>
+     <width>271</width>
      <height>63</height>
     </rect>
    </property>
@@ -33,7 +33,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QComboBox" name="deviceBox"/>
+       <widget class="QLineEdit" name="cameraNumber"/>
       </item>
      </layout>
     </item>

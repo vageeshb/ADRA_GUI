@@ -7,7 +7,7 @@
 #include <QWaitCondition>
 #include <QElapsedTimer>
 #include <opencv2/opencv.hpp>
-#include "imageconversion.h"
+#include "imageprocessing.h"
 #include "videostats.h"
 using namespace cv;
 
@@ -27,6 +27,11 @@ protected:
 signals:
     void processedImage(const QImage &image);
     void processedStats(const VideoStats &stats);
+    void processedSizes(const VideoStats &stats);
+
+private slots:
+    void updateFiltered(bool checked);
+    void updateDetect(bool checked);
 
 private:
     int deviceNumber;
@@ -37,7 +42,9 @@ private:
     int frameCount;
     QImage img;
     bool stop;
-    ImageConversion conv;
+    bool detect;
+    bool filter;
+    ImageProcessing *conv;
     VideoStats stats;
 
 };

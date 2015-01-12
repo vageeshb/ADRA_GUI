@@ -4,6 +4,9 @@ CameraThread::CameraThread(QObject *parent, int deviceNumber) : QThread(parent)
 {
     stop = false;
     this->deviceNumber = deviceNumber;
+    conv = new ImageProcessing();
+    filter = false;
+    detect = false;
 }
 
 CameraThread::~CameraThread()
@@ -17,6 +20,14 @@ CameraThread::~CameraThread()
     wait();
 }
 
+void CameraThread::updateDetect(bool checked) {
+    detect = checked;
+}
+
+void CameraThread::updateFiltered(bool checked) {
+    filter = checked;
+}
+
 void CameraThread::run() {
     QElapsedTimer timer;
     timer.start();
@@ -26,23 +37,34 @@ void CameraThread::run() {
     stats.setHeight(cap.get(CV_CAP_PROP_FRAME_HEIGHT));
     stats.setFps(0);
 
-    qDebug() << cap.get(CV_CAP_PROP_FRAME_WIDTH) << "x" << cap.get(CV_CAP_PROP_FRAME_HEIGHT);
+    qDebug() << "Initialiazing Camera [" << deviceNumber << "]";
+    qDebug() << "Frame Size: " << cap.get(CV_CAP_PROP_FRAME_WIDTH) << "x" << cap.get(CV_CAP_PROP_FRAME_HEIGHT);
 
-    emit processedStats(stats);
+    emit processedSizes(stats);
     frameCount = 0;
 
     if(cap.isOpened()) {
         while(!stop) {
             frameCount++;
             cap.read(frame);
-            img = conv.MatToQImage(frame);
-            if(timer.elapsed() >= 1000) {
-                stats.setFps(frameCount / timer.elapsed());
-                emit processedStats(stats);
-                frameCount = 0;
-                timer.restart();
+            if(frame.data) {
+                if(detect) {
+                    if(filter)
+                        img = conv->DetectPeopleWithFilter(frame);
+                    else
+                        img = conv->DetectPeople(frame);
+                }
+                else
+                    img = conv->MatToQImage(frame);
+
+                if(timer.elapsed() >= 1000) {
+                    stats.setFps(frameCount);
+                    emit processedStats(stats);
+                    frameCount = 0;
+                    timer.restart();
+                }
+                emit processedImage(img);
             }
-            emit processedImage(img);
         }
     }
 }
